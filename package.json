@@ -1,0 +1,6 @@
+{
+  "name": "sourcejs-ngdirective",
+  "version": "0.1.0",
+  
+  "description": "Prevent compling directives in sourcecode"
+}
