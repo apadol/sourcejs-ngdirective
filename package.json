@@ -1,11 +1,9 @@
 {
   "name": "sourcejs-ngdirective",
-  "version": "0.1.1",
-
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/apadol/sourcejs-ngdirective.git"
   },
-  
   "description": "Prevent compling directives in sourcecode"
 }
