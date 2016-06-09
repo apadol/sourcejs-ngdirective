@@ -2,11 +2,9 @@
 
 define([
     'jquery',
-    "source/load-options",
     'sourceModules/module',
-], function ($, options, module) {
+], function ($, module) {
 
-    options.exampleSectionClass = 'before-angular-bootstrap';
     
     function Ngdirective() {
         this.init();
@@ -15,31 +13,42 @@ define([
     Ngdirective.prototype = module.createInstance();
     Ngdirective.prototype.constructor = Ngdirective;
 
+    var ANGULAR_SOURCE_CLASS_NAME = '.source_example.source_ngdirective';
+
     Ngdirective.prototype.init = function () {
-        var examples = $('.source_example');
-        var examplesBefore = [];
-        var appname = options.plugins.ngdirective.appname;
 
-        examples.each(function(i,item){
-            examplesBefore.push($(item).clone());
-        });
-        
-        try{
-            angular.bootstrap(document, [appname]);
-        }
-        catch(err){
-            console.error('App name not defined or angular isnt loaded');
+        function getAngularSourceElems(){
+            var angularSourceElems = document.querySelectorAll(ANGULAR_SOURCE_CLASS_NAME);
+            return (angularSourceElems.length === 0) ? null : angularSourceElems;
         }
 
-        examples.each(function(i,item){
-           $(item).after(
-                $('<div></div>')
-                .addClass(options.exampleSectionClass)
-                .html(examplesBefore[i].html())
-                .hide()
-            );
+        var generateSourceCodeWrapper = (function(){
+            var codeElemEmpty = document.createElement('code');
+            codeElemEmpty.setAttribute('class', 'src-html');
+            codeElemEmpty.setAttribute('ng-non-bindable', '');
+            return function(){
+                return codeElemEmpty.cloneNode();
+            };
+        })();
+
+        $(document).ready(function(){
+
+            var angularSourceElems = getAngularSourceElems();
+
+            if(!angularSourceElems){
+                return; //no angular elements.
+            }
+
+            Array.prototype.forEach.call(angularSourceElems, function(angularSourceElem){
+                var sourceCodeWrapper = generateSourceCodeWrapper();
+                Array.prototype.forEach.call(angularSourceElem.children, function(child){
+                    sourceCodeWrapper.appendChild(child.cloneNode());
+                });
+                angularSourceElem.parentElement.insertBefore(sourceCodeWrapper, angularSourceElem);
+            });
+
+
         });
     };
-
     return new Ngdirective();
 });
